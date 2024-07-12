@@ -6,8 +6,10 @@ public class ParallaxLayer : MonoBehaviour
 {
     public float parallaxFactor;
     public float imageWidth; // The width of one image in the layer
-
-    private List<Transform> layerImages = new List<Transform>();
+    public Camera targetCamera;
+    
+    private Queue<Transform> layerImages = new();
+    private Transform rightMostImage;
 
     void Start()
     {
@@ -15,7 +17,13 @@ public class ParallaxLayer : MonoBehaviour
         for (int i = 0; i < transform.childCount; i++)
         {
             Transform image = transform.GetChild(i);
-            layerImages.Add(image);
+            layerImages.Enqueue(image);
+
+            if (i == transform.childCount - 1)
+            {
+                rightMostImage = image;
+                imageWidth = transform.GetChild(0).GetComponent<SpriteRenderer>().bounds.size.x;
+            }
         }
     }
 
@@ -32,47 +40,41 @@ public class ParallaxLayer : MonoBehaviour
 
     private void RepositionImages()
     {
-        // Loop through each image in the layer
-        for (int i = 0; i < layerImages.Count; i++)
+        while (IsOutOfView(layerImages.Peek()))
         {
-            Transform image = layerImages[i];
+            // Find the rightmost image
+            Transform image = layerImages.Dequeue();
 
-            // Check if the image is out of view
-            if (IsOutOfView(image))
-            {
-                // Find the rightmost image
-                Transform rightmostImage = GetRightmostImage();
+            // Reposition the out-of-view image to the rightmost position
+            image.localPosition = new Vector3(rightMostImage.localPosition.x + imageWidth, image.localPosition.y,
+                image.localPosition.z);
 
-                // Reposition the out-of-view image to the rightmost position
-                image.localPosition = new Vector3(rightmostImage.localPosition.x + imageWidth, image.localPosition.y, image.localPosition.z);
-
-                // Bring the repositioned image to the end of the list
-                layerImages.Remove(image);
-                layerImages.Add(image);
-            }
+            // Bring the repositioned image to the end of the list
+            layerImages.Enqueue(image);
+            rightMostImage = image;
         }
     }
 
     private bool IsOutOfView(Transform image)
     {
-        float cameraLeftEdge = Camera.main.transform.position.x - Camera.main.orthographicSize * Camera.main.aspect;
+        float cameraLeftEdge = targetCamera.transform.position.x - targetCamera.orthographicSize * targetCamera.aspect;
         float imageRightEdge = image.position.x + imageWidth / 2;
 
         return imageRightEdge < cameraLeftEdge;
     }
 
-    private Transform GetRightmostImage()
-    {
-        Transform rightmostImage = layerImages[0];
-
-        foreach (Transform image in layerImages)
-        {
-            if (image.localPosition.x > rightmostImage.localPosition.x)
-            {
-                rightmostImage = image;
-            }
-        }
-
-        return rightmostImage;
-    }
+    // private Transform GetRightmostImage()
+    // {
+    //     Transform rightmostImage = layerImages[0];
+    //
+    //     foreach (Transform image in layerImages)
+    //     {
+    //         if (image.localPosition.x > rightmostImage.localPosition.x)
+    //         {
+    //             rightmostImage = image;
+    //         }
+    //     }
+    //
+    //     return rightmostImage;
+    // }
 }

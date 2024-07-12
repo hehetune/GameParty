@@ -22,6 +22,8 @@ public class ParallaxBackground : MonoBehaviour
     {
         parallaxLayers.Clear();
 
+        Camera targetCamera = parallaxCamera.GetComponent<Camera>();
+
         for (int i = 0; i < transform.childCount; i++)
         {
             ParallaxLayer layer = transform.GetChild(i).GetComponent<ParallaxLayer>();
@@ -30,6 +32,7 @@ public class ParallaxBackground : MonoBehaviour
             {
                 layer.name = "Layer-" + i;
                 parallaxLayers.Add(layer);
+                layer.targetCamera = targetCamera;
             }
         }
     }
