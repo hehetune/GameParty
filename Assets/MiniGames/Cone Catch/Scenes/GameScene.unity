@@ -360,7 +360,7 @@ GameObject:
   - component: {fileID: 476925511}
   - component: {fileID: 476925512}
   - component: {fileID: 476925513}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cone
   m_TagString: Cone
   m_Icon: {fileID: 0}
@@ -476,7 +476,7 @@ GameObject:
   - component: {fileID: 669098876}
   - component: {fileID: 669098875}
   - component: {fileID: 669098878}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -549,9 +549,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9f16768dbf04d158b2514205a2d794d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterAnimation: {fileID: 775663376}
-  jumpForce: 100
-  moveSpeed: 10
+  _stats: {fileID: 11400000, guid: 60ca79b010b943c47ac37cd91ab6c153, type: 2}
 --- !u!114 &669098878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -578,7 +576,7 @@ GameObject:
   - component: {fileID: 775663375}
   - component: {fileID: 775663374}
   - component: {fileID: 775663376}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -682,13 +680,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 775663372}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 285127cb875a448f92fa9113aadb8c80, type: 3}
+  m_Script: {fileID: 11500000, guid: 4871ca853c014994a07f07d568d0de8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 775663374}
-  spriteRenderer: {fileID: 775663375}
-  blinkCount: 3
-  blinkDuration: 0.5
+  _anim: {fileID: 775663374}
+  _sprite: {fileID: 775663375}
+  _maxIdleSpeed: 2
+  _maxTilt: 5
+  _tiltSpeed: 20
+  _jumpParticles: {fileID: 0}
+  _launchParticles: {fileID: 0}
+  _moveParticles: {fileID: 0}
+  _landParticles: {fileID: 0}
+  _footsteps: []
 --- !u!1 &838730371
 GameObject:
   m_ObjectHideFlags: 0
