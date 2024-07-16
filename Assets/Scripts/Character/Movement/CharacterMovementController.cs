@@ -6,12 +6,12 @@ namespace Character.Movement
     [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
     public class CharacterMovementController : CharacterController, ICharacterMovementController
     {
-        [SerializeField] private ScriptableStats _stats;
-        private Rigidbody2D _rb;
-        private CapsuleCollider2D _col;
-        private FrameInput _frameInput;
-        private Vector2 _frameVelocity;
-        private bool _cachedQueryStartInColliders;
+        [SerializeField] protected ScriptableStats _stats;
+        protected Rigidbody2D _rb;
+        protected CapsuleCollider2D _col;
+        protected FrameInput _frameInput;
+        protected Vector2 _frameVelocity;
+        protected bool _cachedQueryStartInColliders;
 
         protected bool canInput = false;
 

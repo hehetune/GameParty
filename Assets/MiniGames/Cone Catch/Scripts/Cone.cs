@@ -10,9 +10,11 @@ namespace MiniGames.Cone_Catch.Scripts
 
         public bool isAttached = false;
 
+        public Vector3 nextConeLocalPosition;
+        
         private void Update()
         {
-            if (isAttached) return;
+            if (ConeStack != null) return;
             transform.position =
                 new Vector3(transform.position.x, transform.position.y - Time.deltaTime * fallSpeed);
             if (transform.position.y <= -3.5f) GetComponent<PoolObject>().ReturnToPool();
@@ -20,11 +22,12 @@ namespace MiniGames.Cone_Catch.Scripts
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.gameObject.CompareTag("Cone"))
+            if (!isAttached && ConeStack!= null && other.gameObject.CompareTag("ConeBottom"))
             {
-                Cone cone = other.gameObject.GetComponent<Cone>();
+                isAttached = true;
+                Cone cone = other.gameObject.GetComponentInParent<Cone>();
                 if (cone.isAttached) return;
-                ConeStack.AttachCone(this);
+                ConeStack.AttachCone(cone);
             }
         }
     }
