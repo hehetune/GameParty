@@ -6,12 +6,12 @@ namespace MiniGames.Cone_Catch.Scripts
 {
     public class ConeCatch_CC : CharacterMovementController
     {
-        protected ConeStack _coneStack;
+        public ConeStack _coneStack;
 
         protected override void Awake()
         {
             base.Awake();
-            _coneStack = GetComponent<ConeStack>();
+            this.Jumped += OnJump;
         }
 
         protected override void FixedUpdate()
@@ -25,6 +25,11 @@ namespace MiniGames.Cone_Catch.Scripts
         {
             if (_frameInput.Move.x == 0) return;
             _coneStack.ChangeStackAngle(_frameInput.Move.x > 0);
+        }
+
+        protected virtual void OnJump()
+        {
+            _coneStack.DoJumpEffect();
         }
     }
 }

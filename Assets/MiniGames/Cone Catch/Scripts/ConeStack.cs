@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -9,16 +10,16 @@ namespace MiniGames.Cone_Catch.Scripts
     public class ConeStack : MonoBehaviour
     {
         [SerializeField] private List<Cone> cones = new();
-        [SerializeField] private float rotationChangeSpeed = 10f;
-        [SerializeField] private float rotationChangeSpeedMax = 30f;
+        [SerializeField] private float rotationChangeSpeed = 5f;
+        [SerializeField] private float rotationChangeSpeedMax = 20f;
         [SerializeField] private float rotationChangeSpeedModifier = 1f;
 
         [SerializeField] private float maxAngle = 5;
 
-        [SerializeField] private float angleIncreaseSpeed = 1f;
+        [SerializeField] private float angleIncreaseSpeed = 0.5f;
         [SerializeField] private float angleIncreaseSpeedMin = 0.1f;
         [SerializeField] private float angleIncreaseModifier = 0.1f;
-        [SerializeField] private float angleDecreaseSpeed = 0.3f;
+        [SerializeField] private float angleDecreaseSpeed = 0.6f;
         [SerializeField] private float angleDecreaseSpeedMin = 0.05f;
         [SerializeField] private float angleDecreaseModifier = 0.05f;
 
@@ -33,9 +34,10 @@ namespace MiniGames.Cone_Catch.Scripts
             Cone previousCone = cones[^1];
             if (previousCone)
             {
-                cone.transform.SetParent(previousCone.transform);
-                cone.transform.localPosition = previousCone.nextConeLocalPosition;
-                cone.transform.localRotation = Quaternion.Euler(0f, 0f, currentAngle);
+                // cone.transform.SetParent(previousCone.nextCone.transform);
+                cone.targetPosition = previousCone.nextConePosition;
+                cone.transform.position = previousCone.nextConePosition.position;
+                cone.transform.rotation = Quaternion.Euler(0f, 0f, currentAngle * cones.Count);
             }
             cones.Add(cone);
 
@@ -50,10 +52,9 @@ namespace MiniGames.Cone_Catch.Scripts
             {
                 for (int i = 1; i < cones.Count; i++)
                 {
-                    var Cone = cones.ElementAt(i);
-
-                    Cone.transform.localRotation = Quaternion.RotateTowards(Cone.transform.localRotation,
-                        Quaternion.Euler(0f, 0f, currentAngle), rotationChangeSpeed * Time.deltaTime);
+                    var Cone = cones[i];
+                    Cone.transform.rotation = Quaternion.RotateTowards(Cone.transform.rotation,
+                        Quaternion.Euler(0f, 0f, currentAngle * i), rotationChangeSpeed * Time.deltaTime);
                 }
             }
 
@@ -65,10 +66,54 @@ namespace MiniGames.Cone_Catch.Scripts
             }
         }
 
+        public void DoJumpEffect()
+        {
+            // StartCoroutine(ConeStackJumpEffectCoroutine());
+        }
+
+        // IEnumerator ConeStackJumpEffectCoroutine()
+        // {
+        //     foreach (Cone cone in cones)
+        //     {
+        //         yield return ConeJumpEffectCoroutine(cone.transform);
+        //         yield return 0.2f.Wait();
+        //     }
+        // }
+        //
+        // IEnumerator ConeJumpEffectCoroutine(Transform cone)
+        // {
+        //     float elapsedTime = 0.25f;
+        //     float timer = 0f;
+        //     float distance = 0.5f;
+        //
+        //     while (timer < elapsedTime)
+        //     {
+        //         cone.localPosition = new Vector3(0f, Mathf.Lerp(0f, distance, timer), 0f);
+        //         timer += Time.deltaTime;
+        //         yield return null;
+        //     }
+        // }
+
         public void ChangeStackAngle(bool increase)
         {
             resetAngleTimer = resetAngleTime;
             currentAngle = Mathf.Clamp(currentAngle + angleIncreaseSpeed * (increase ? 1 : -1), -maxAngle, maxAngle);
+        }
+
+        public void DamageByBomb()
+        {
+            int i = cones.Count - 1;
+            int conesDestroyed = 0;
+            while (i >= 1 && conesDestroyed <= 3)
+            {
+                cones[i].GetComponent<PoolObject>().ReturnToPool();
+                cones.RemoveAt(i);
+                conesDestroyed++;
+                i--;
+            }
+
+            cones[^1].SetConeCollidersEnable(true);
+            cones[^1].isAttached = false;
         }
     }
 }
