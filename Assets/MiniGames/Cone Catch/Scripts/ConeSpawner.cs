@@ -1,10 +1,14 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace MiniGames.Cone_Catch.Scripts
 {
     public class ConeSpawner : MonoBehaviour
     {
+        [SerializeField] private List<Sprite> coneSprites;
         public Prefab ConePrefab;
 
         public float spawnY;
@@ -14,10 +18,17 @@ namespace MiniGames.Cone_Catch.Scripts
 
         private bool shouldSpawn = true;
 
-        private void Start()
+        public Action<Cone> onSpawnConeEvent;
+
+        private void Awake()
         {
-            SpawnCones();
+            ConeCatch_GM.Instance.onGameStart += SpawnCones;
         }
+
+        // private void Start()
+        // {
+        //     SpawnCones();
+        // }
 
         private void SpawnCones()
         {
@@ -31,6 +42,11 @@ namespace MiniGames.Cone_Catch.Scripts
                 PoolManager.Get<PoolObject>(ConePrefab, out var coneGO);
                 coneGO.transform.position = new Vector3(Random.Range(minSpawnX, maxSpawnX), spawnY, 0);
                 coneGO.transform.rotation = Quaternion.identity;
+                coneGO.GetComponent<Cone>().Setup(coneSprites[Random.Range(0, coneSprites.Count)]);
+
+                yield return null;
+
+                onSpawnConeEvent?.Invoke(coneGO.GetComponent<Cone>());
 
                 yield return Random.Range(minSpawnDelay, maxSpawnDelay).Wait();
             }

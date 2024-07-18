@@ -18,12 +18,12 @@ namespace MiniGames.Cone_Catch.Scripts
         [SerializeField] private float ySpawnValue;
         [SerializeField] private float ySignSpawnValue = 0f;
 
-        private void Start()
+        private void Awake()
         {
-            StartSpawn();
+            ConeCatch_GM.Instance.onGameStart += SpawnBombs;
         }
 
-        public void StartSpawn()
+        private void SpawnBombs()
         {
             canSpawn = true;
             StartCoroutine(StartSpawnCoroutine());

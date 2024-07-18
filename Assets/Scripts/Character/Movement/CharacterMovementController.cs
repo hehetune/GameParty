@@ -25,6 +25,11 @@ namespace Character.Movement
 
         private float _time;
 
+        protected virtual void Start()
+        {
+            
+        }
+
         protected virtual void Awake()
         {
             _rb = GetComponent<Rigidbody2D>();
@@ -200,7 +205,8 @@ namespace Character.Movement
         }
 #endif
     }
-
+    
+    [Serializable]
     public struct FrameInput
     {
         public bool JumpDown;

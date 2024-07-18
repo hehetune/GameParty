@@ -28,22 +28,24 @@ namespace MiniGames.Cone_Catch.Scripts
         private float resetAngleTimer = 0f;
         private float resetAngleTime = 0.25f;
 
+        public Action<Cone> OnTopConeChange;
+
         public void AttachCone(Cone cone)
         {
             cone.ConeStack = this;
             Cone previousCone = cones[^1];
-            if (previousCone)
-            {
-                // cone.transform.SetParent(previousCone.nextCone.transform);
-                cone.targetPosition = previousCone.nextConePosition;
-                cone.transform.position = previousCone.nextConePosition.position;
-                cone.transform.rotation = Quaternion.Euler(0f, 0f, currentAngle * cones.Count);
-            }
+            cone.targetPosition = previousCone.nextConePosition;
+            cone.transform.position = previousCone.nextConePosition.position;
+            cone.transform.rotation = Quaternion.Euler(0f, 0f, currentAngle * cones.Count);
+            cone.UpdateSortingOrder(cones.Count);
+            cone.isCollected = true;
             cones.Add(cone);
 
             angleIncreaseSpeed = Mathf.Max(angleIncreaseSpeedMin, angleIncreaseSpeed - angleIncreaseModifier);
             angleDecreaseSpeed = Mathf.Max(angleDecreaseSpeedMin, angleDecreaseSpeed - angleDecreaseModifier);
             rotationChangeSpeed = Mathf.Min(rotationChangeSpeedMax, rotationChangeSpeed + rotationChangeSpeedModifier);
+            
+            OnTopConeChange?.Invoke(cone);
         }
 
         private void Update()
@@ -66,9 +68,13 @@ namespace MiniGames.Cone_Catch.Scripts
             }
         }
 
-        public void DoJumpEffect()
+        public void HandleConesFallDelay()
         {
-            // StartCoroutine(ConeStackJumpEffectCoroutine());
+            Debug.LogWarning("Handle cones fall delay");
+            for(int i = 1; i < cones.Count; i++)
+            {
+                cones[i].DelayFollowTarget();
+            }
         }
 
         // IEnumerator ConeStackJumpEffectCoroutine()
@@ -113,7 +119,11 @@ namespace MiniGames.Cone_Catch.Scripts
             }
 
             cones[^1].SetConeCollidersEnable(true);
-            cones[^1].isAttached = false;
+            cones[^1].isConnected = false;
+            
+            OnTopConeChange?.Invoke(cones[^1]);
         }
+
+        public Cone LastCone => cones[^1];
     }
 }

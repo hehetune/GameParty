@@ -49,3 +49,12 @@ TagManager:
   - name: Foreground
     uniqueID: 3474738999
     locked: 0
+  - name: Player
+    uniqueID: 2669998673
+    locked: 0
+  - name: Cone
+    uniqueID: 1732464635
+    locked: 0
+  - name: UI
+    uniqueID: 2708211785
+    locked: 0

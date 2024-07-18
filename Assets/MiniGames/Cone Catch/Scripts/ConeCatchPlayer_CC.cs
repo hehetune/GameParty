@@ -8,7 +8,10 @@ namespace MiniGames.Cone_Catch.Scripts
         protected override void Awake()
         {
             base.Awake();
-            canInput = true;
+            canInput = false;
+
+            ConeCatch_GM.Instance.onGameStart += OnGameStart;
+            
         }
         protected override void OnGameStart()
         {
@@ -16,10 +19,10 @@ namespace MiniGames.Cone_Catch.Scripts
             canInput = true;
         }
 
-        protected override void OnGameEnd()
-        {
-            base.OnGameEnd();
-            canInput = false;
-        }
+        // protected override void OnGameEnd()
+        // {
+        //     base.OnGameEnd();
+        //     canInput = false;
+        // }
     }
 }
