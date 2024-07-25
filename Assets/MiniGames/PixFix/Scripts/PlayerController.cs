@@ -14,12 +14,18 @@ namespace MiniGames.PixFix.Scripts
         private void UpdateInput()
         {
             int x = 0, y = 0;
+            bool l = false, r = false, space = false;
             if (Input.GetKey(KeyCode.UpArrow)) y = 1;
             if (Input.GetKey(KeyCode.DownArrow)) y = -1;
             if (Input.GetKey(KeyCode.LeftArrow)) x = -1;
             if (Input.GetKey(KeyCode.RightArrow)) x = 1;
 
-            _cursor.UpdateFrameInput(x, y);
+            if (Input.GetKeyDown(KeyCode.Space)) space = true;
+
+            if (Input.GetKeyDown(KeyCode.Q)) l = true;
+            if (Input.GetKeyDown(KeyCode.E)) r = true;
+
+            _cursor.UpdateFrameInput(x, y, l, r, space);
         }
     }
 }
